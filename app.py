@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
 from sklearn.preprocessing import OneHotEncoder
@@ -9,7 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import StandardScaler
 warnings.simplefilter(action='ignore')
 
 hide_dataframe_row_index = """
