@@ -54,8 +54,8 @@ if options == "Dataset":
 if options == "Lag Prediction Results":
     models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
     if models == "Linear Regression":
-        st.write("Linear Regression Accuracy: ", linearAccuracy)
-        st.write("Linear Regression MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
+        st.write("Accuracy: ", linearAccuracy)
+        st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
     if models == "Random Forest Regression":
-        st.write("Random Forest Regression Accuracy: ", rfAccuracy)
-        st.write("Random Forest Regression MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
+        st.write("Accuracy: ", rfAccuracy)
+        st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
