@@ -65,11 +65,8 @@ if options == "Custom Input":
     start_frame = int(start_frame)
     end_frame = int(end_frame)
     lag = end_frame - start_frame
-    ftd_ = (end_frame - start_frame) * (1000/240)
-    ftd = "Frame Time Difference (using formula): " + str(ftd_)
-    fd = "Frame Difference : " + str(end_frame - start_frame)
     action = ["ADS HG", "Camera Right", "Crouch", "Melee", "Prone", "Reload HG", "Shoot AR", "Shoot HG", "Shoot LMG", "Walk Back"]
-    video = st.selectbox("Select video", (action))
+    video = st.selectbox("Select video name", (action))
     if video == "ADS HG":
         X = [1,0,0,0,0,0,0,0,0,0,start_frame,end_frame,lag]
     elif video == "Camera Right":
@@ -90,17 +87,20 @@ if options == "Custom Input":
         X = [0,0,0,0,0,0,0,0,1,0,start_frame,end_frame,lag]
     elif video == "Walk Back":
         X = [0,0,0,0,0,0,0,0,0,1,start_frame,end_frame,lag]
+    ftd_ = (end_frame - start_frame) * (1000/240)
+    ftd = "Frame Time Difference (using formula): " + str(int(ftd_))
+    fd = "Frame Difference : " + str(int(end_frame - start_frame))
     if (start_frame!=0 and end_frame!=0):
-        st.success(fd)
-        st.success(ftd)
+        st.info(fd)
+        st.info(ftd)
         X = np.array(X)
         X = X.reshape(1,-1)
         linearY_pred = linearRegressor.predict(X)
         rfY_pred = rfRegressor.predict(X)
         models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
         if models == "Linear Regression" :
-            LRP = "Linear Regression Prediction : " + str(linearY_pred[0])
+            LRP = "Linear Regression Prediction : " + str(int(linearY_pred[0]))
             st.success(LRP)
         if models == "Random Forest Regression" :
-            RFRP = "Random Forest Regression Prediction : " + str(rfY_pred[0])
+            RFRP = "Random Forest Regression Prediction : " + str(int(rfY_pred[0]))
             st.success(RFRP)
