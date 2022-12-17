@@ -88,19 +88,19 @@ if options == "Custom Input":
     elif video == "Walk Back":
         X = [0,0,0,0,0,0,0,0,0,1,start_frame,end_frame,lag]
     ftd_ = (end_frame - start_frame) * (1000/240)
-    ftd = "Frame Time Difference (using formula): " + str(int(ftd_))
-    fd = "Frame Difference : " + str(int(end_frame - start_frame))
+    #ftd = "Frame Time Difference (using formula): " + str(ftd_)
+    fd = "Frame Difference : " + str(end_frame - start_frame)
     if (start_frame!=0 and end_frame!=0):
         st.info(fd)
-        st.info(ftd)
+        #st.info(ftd)
         X = np.array(X)
         X = X.reshape(1,-1)
         linearY_pred = linearRegressor.predict(X)
         rfY_pred = rfRegressor.predict(X)
         models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
         if models == "Linear Regression" :
-            LRP = "Linear Regression Prediction : " + str(int(linearY_pred[0]))
+            LRP = "Prediction : " + str(linearY_pred[0])
             st.success(LRP)
         if models == "Random Forest Regression" :
-            RFRP = "Random Forest Regression Prediction : " + str(int(rfY_pred[0]))
+            RFRP = "Prediction : " + str(rfY_pred[0])
             st.success(RFRP)
