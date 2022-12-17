@@ -49,16 +49,25 @@ rfAccuracy = rfRegressor.score(X_test,y_test)
 st.title("Find the lag")
 options = st.radio("Navigation", ("Dataset", "Lag Prediction Results", "Custom Input"), horizontal = True)
 if options == "Dataset":
-    df = pd.read_csv("Dataset.csv")
-    st.write(dataset)
+    option = st.selectbox("Options", ("Table", "Bar Chart"))
+    if option == "Table":
+        st.write(dataset)
+    if option == "Bar Chart":
+        print(dataset.columns)
+        options = st.selectbox("Features", ("Video Name", "Frame Start", "Frame End", "Frame Difference"))
+        st.bar_chart(dataset, x=options, y="Frame Time Difference (ms)")
 if options == "Lag Prediction Results":
-    models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
-    if models == "Linear Regression":
-        st.write("Accuracy: ", linearAccuracy)
-        st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
-    if models == "Random Forest Regression":
-        st.write("Accuracy: ", rfAccuracy)
-        st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
+    col1, col2 = st.columns(2)
+    with col1:
+        models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
+    with col2:
+        st.write("\n")
+        if models == "Linear Regression":
+            st.write("Accuracy: ", linearAccuracy)
+            st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
+        if models == "Random Forest Regression":
+            st.write("Accuracy: ", rfAccuracy)
+            st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
 if options == "Custom Input":
     start_frame = st.text_input("Start Frame", 0)
     end_frame = st.text_input("End Frame", 0)
@@ -90,17 +99,21 @@ if options == "Custom Input":
     ftd_ = (end_frame - start_frame) * (1000/240)
     #ftd = "Frame Time Difference (using formula): " + str(ftd_)
     fd = "Frame Difference : " + str(end_frame - start_frame)
-    if (start_frame!=0 and end_frame!=0):
-        st.info(fd)
-        #st.info(ftd)
-        X = np.array(X)
-        X = X.reshape(1,-1)
-        linearY_pred = linearRegressor.predict(X)
-        rfY_pred = rfRegressor.predict(X)
-        models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
-        if models == "Linear Regression" :
-            LRP = "Prediction : " + str(linearY_pred[0])
-            st.success(LRP)
-        if models == "Random Forest Regression" :
-            RFRP = "Prediction : " + str(rfY_pred[0])
-            st.success(RFRP)
+    st.info(fd)
+    #st.info(ftd)
+    models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
+    pred_button = st.button("Predict")
+    if pred_button:
+        if (end_frame != 0):
+            X = np.array(X)
+            X = X.reshape(1,-1)
+            linearY_pred = linearRegressor.predict(X)
+            rfY_pred = rfRegressor.predict(X)
+            if models == "Linear Regression" :
+                LRP = "Predicted Frame Time Difference (ms) : " + str(linearY_pred[0])
+                st.success(LRP)
+            if models == "Random Forest Regression" :
+                RFRP = "Predicted Frame Time Difference (ms) : " + str(rfY_pred[0])
+                st.success(RFRP)
+        else:
+            st.error("Prediction unsuccessful. Please change values")
