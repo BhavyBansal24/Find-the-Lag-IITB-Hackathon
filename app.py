@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import warnings
-import base64
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
@@ -48,14 +47,10 @@ rfY_pred = rfRegressor.predict(X_test)
 rfAccuracy = rfRegressor.score(X_test,y_test)
 
 st.title("Find the lag")
-options = st.radio("Navigation", ("Dataset & Analysis", "Lag Prediction Results", "Own Values"), horizontal = True)
-if options == "Dataset & Analysis":
+options = st.radio("Navigation", ("Dataset", "Lag Prediction Results", "Custom Input"), horizontal = True)
+if options == "Dataset":
     df = pd.read_csv("Dataset.csv")
     st.write(dataset)
-    with open("Dataset Analysis.pdf","rb") as f:
-      base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="800" type="application/pdf"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
 if options == "Lag Prediction Results":
     models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
     if models == "Linear Regression":
@@ -64,7 +59,7 @@ if options == "Lag Prediction Results":
     if models == "Random Forest Regression":
         st.write("Accuracy: ", rfAccuracy)
         st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
-if options == "Own Values":
+if options == "Custom Input":
     start_frame = st.text_input("Start Frame", 0)
     end_frame = st.text_input("End Frame", 0)
     start_frame = int(start_frame)
