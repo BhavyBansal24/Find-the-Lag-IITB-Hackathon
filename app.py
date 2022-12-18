@@ -31,6 +31,7 @@ st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 dataset = pd.read_csv("Dataset.csv")
 dataset = dataset.drop(['Serial Num'],axis=1)
 X = dataset.iloc[:,:-1].values # Training Features
+X_ = dataset.iloc[:,1:-1].values # Training Features
 y = dataset.iloc[:,4].values # Target Variable
 
 # Performing One-Hot Encoding
@@ -41,18 +42,26 @@ X = np.array(columnTransformer.fit_transform(X))
 
 # Train Test data split
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.1, random_state = 0)
-    
+X__train, X__test, y__train, y__test = train_test_split(X_,y,test_size = 0.1, random_state = 0)
 #Linear Regression
 linearRegressor = LinearRegression()
+linearRegressor_ = LinearRegression()
 linearRegressor.fit(X_train,y_train)
+linearRegressor_.fit(X__train,y__train)
 linearY_pred = linearRegressor.predict(X_test)
+linearY_pred_ = linearRegressor_.predict(X__test)
 linearAccuracy = linearRegressor.score(X_test,y_test)
-    
+linearAccuracy_ = linearRegressor_.score(X__test,y__test)
+
 #Random Forest Regression
 rfRegressor = RandomForestRegressor(n_estimators = 300, random_state = 0)
+rfRegressor_ = RandomForestRegressor(n_estimators = 300, random_state = 0)
 rfRegressor.fit(X,y)
+rfRegressor_.fit(X_,y)
 rfY_pred = rfRegressor.predict(X_test)
+rfY_pred_ = rfRegressor_.predict(X__test)
 rfAccuracy = rfRegressor.score(X_test,y_test)
+rfAccuracy_ = rfRegressor_.score(X__test,y__test)
 
 # Code for WebApp Deployment 
 st.title("Find the lag")
@@ -66,17 +75,30 @@ if options == "Dataset":
         options = st.selectbox("Features", ("Video Name", "Frame Start", "Frame End", "Frame Difference"))
         st.bar_chart(dataset, x=options, y="Frame Time Difference (ms)")
 if options == "Lag Prediction Results":
+    ## Model without droping video names
+    # col1, col2 = st.columns(2)
+    # with col1:
+    #     models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
+    # with col2:
+    #     st.write("\n")
+    #     if models == "Linear Regression":
+    #         st.write("Accuracy: ", linearAccuracy)
+    #         st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
+    #     if models == "Random Forest Regression":
+    #         st.write("Accuracy: ", rfAccuracy)
+    #         st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
+    ## Model after droping video names
     col1, col2 = st.columns(2)
     with col1:
-        models = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
+        model = st.selectbox("Select Model", ("Linear Regression", "Random Forest Regression"))
     with col2:
         st.write("\n")
-        if models == "Linear Regression":
-            st.write("Accuracy: ", linearAccuracy)
-            st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y_test, linearY_pred))))
-        if models == "Random Forest Regression":
-            st.write("Accuracy: ", rfAccuracy)
-            st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y_test, rfY_pred))))
+        if model == "Linear Regression":
+            st.write("Accuracy: ", linearAccuracy_)
+            st.write("MSE: ", float("{:.20f}".format(mean_squared_error(y__test, linearY_pred_))))
+        if model == "Random Forest Regression":
+            st.write("Accuracy: ", rfAccuracy_)
+            st.write("MSE: ", float("{:.6f}".format(mean_squared_error(y__test, rfY_pred_))))
 if options == "Custom Input":
     start_frame = st.text_input("Start Frame", 0)
     end_frame = st.text_input("End Frame", 0)
