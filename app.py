@@ -1,7 +1,9 @@
-import streamlit as st
+# Importing Required Libraries
+import streamlit as st # Library for WebApp
 import numpy as np
 import pandas as pd
 import warnings
+# Importing Sklearn required packages
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
@@ -18,20 +20,26 @@ hide_dataframe_row_index = """
             #MainMenu {visibility: hidden;}
             </style>
             """
+# WebApp Setup
 st.set_page_config(
     page_title="Find The Lag",
     page_icon = ":video_game:"
 )
 st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
-
+# Loading the dataset using pandas
 dataset = pd.read_csv("Dataset.csv")
 dataset = dataset.drop(['Serial Num'],axis=1)
-X = dataset.iloc[:,:-1].values
-y = dataset.iloc[:,4].values
+X = dataset.iloc[:,:-1].values # Training Features
+y = dataset.iloc[:,4].values # Target Variable
+
+# Performing One-Hot Encoding
 columnTransformer = ColumnTransformer([('encoder', OneHotEncoder(), [0])], remainder='passthrough')
+
+# fit_transform "To use video_names as model_features"
 X = np.array(columnTransformer.fit_transform(X))
-# X = X[:, 1:] #Prevent Dummy Variable Trap
+
+# Train Test data split
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.1, random_state = 0)
     
 #Linear Regression
@@ -46,6 +54,7 @@ rfRegressor.fit(X,y)
 rfY_pred = rfRegressor.predict(X_test)
 rfAccuracy = rfRegressor.score(X_test,y_test)
 
+# Code for WebApp Deployment 
 st.title("Find the lag")
 options = st.radio("Navigation", ("Dataset", "Lag Prediction Results", "Custom Input"), horizontal = True)
 if options == "Dataset":
